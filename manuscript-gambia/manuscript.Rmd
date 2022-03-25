@@ -1,6 +1,6 @@
 ---
 title: "A spatial and temporal analysis of mangroves vegetation of The Gambia using seasonal metrics derived from times series of remotely sensed data in Earth Engine"
-runtitle: "A spatial and temporal analysis of mangroves vegetation of The Gambia"
+runtitle: "Mangrove dynamics in The Gambia"
 documentclass: frontiersSCNS  # or frontiersHLTH, or frontiersFPHY
 author:
   - name: Issoufou Liman Harou
@@ -46,9 +46,17 @@ linkcolor: blue
 header-includes:
   - \input{includes.tex}
 note: Replication files are available on the author's Github account (http://github.com/Issoufou-Liman).
-abstract: Gambia, relative to its size, has an extensive mangrove cover along its cost. This unique vegetation serves numerous roles. It is the source of edible products sourcing (e.g., shellfishing) for thousands of households living close to the water systems. The vegetation is also the source of wood for energy, construction and other household utensils and farm materials. Of late, there is a lot ongoing in the mangrove ecosystems and the spatial coverage of this vegetation type has been oscillating between gains and losses. A proper account of change magnitude and where the changes have been happening is not widely studied. In some case, the methods deployed even may have uncertainties that made the estimates to vary between studies. We estimated the spatial-temporal dynamics of mangrove between 2000 and 2020. We used 2,916 Landsat and 959 MODIS tiles (used for filling gaps in Landsat data) of land surface reflectance data spread across 3 bands (i.e., visible red, near infrared and shortest wave infrared) acquired between the years 2000 and 2020. The atmospherically corrected Landsat and MODIS surface reflectance provide reasonable estimates of target reflectance as it would be measured on the ground, making them good candidates for land use and land cover analysis. A classification accuracy of 0.97 and above was achieved both for the overall accuracy and Kappa coefficient. The results revealed that mangroves in The Gambia made net gains over the time period considered. Mangroves, in general, made a significant gain with a net area gain of about 7,784 ha over the 20 years period. The total area gain of mangroves in the period was about 11,951 ha (with almost 598 ha per year). During the same period, the loss in the existing mangrove vegetation area was estimated to be 4,167 ha with an estimated annual loss of about 208 ha. This observed recovery of the mangrove extent could largely be attributed to growing awareness about the importance of this vegetation type for coastal area resilience and the livelihoods of thousands who depend on it. We, however, want to note that the observed net gains should not mask the ongoing degradation of mangroves in other parts of the country. With the losses of such, the damage to livelihoods and biodiversity such as fish and marine life is significant. There still needs a strong push for minimizing the losses being recorded and invest in restoring those areas that are devoid of the vegetation already. 
-Keywords: Satellite image time series; Landsat data; Land cover classification; Change detection; Mangrove; Google Earth Engine
 ---
+
+\begin{abstract}
+
+Gambia, relative to its size, has an extensive mangrove cover along its cost. This unique vegetation serves numerous roles. It is the source of edible products sourcing (e.g., shellfishing) for thousands of households living close to the water systems. The vegetation is also the source of wood for energy, construction and other household utensils and farm materials. Of late, there is a lot ongoing in the mangrove ecosystems and the spatial coverage of this vegetation type has been oscillating between gains and losses. A proper account of change magnitude and where the changes have been happening is not widely studied. In some case, the methods deployed even may have uncertainties that made the estimates to vary between studies. We estimated the spatial-temporal dynamics of mangrove between 2000 and 2020. We used 2,916 Landsat and 959 MODIS tiles (used for filling gaps in Landsat data) of land surface reflectance data spread across 3 bands (i.e., visible red, near infrared and shortest wave infrared) acquired between the years 2000 and 2020. The atmospherically corrected Landsat and MODIS surface reflectance provide reasonable estimates of target reflectance as it would be measured on the ground, making them good candidates for land use and land cover analysis. A classification accuracy of 0.97 and above was achieved both for the overall accuracy and Kappa coefficient. The results revealed that mangroves in The Gambia made net gains over the time period considered. Mangroves, in general, made a significant gain with a net area gain of about 7,784 ha over the 20 years period. The total area gain of mangroves in the period was about 11,951 ha (with almost 598 ha per year). During the same period, the loss in the existing mangrove vegetation area was estimated to be 4,167 ha with an estimated annual loss of about 208 ha. This observed recovery of the mangrove extent could largely be attributed to growing awareness about the importance of this vegetation type for coastal area resilience and the livelihoods of thousands who depend on it. We, however, want to note that the observed net gains should not mask the ongoing degradation of mangroves in other parts of the country. With the losses of such, the damage to livelihoods and biodiversity such as fish and marine life is significant. There still needs a strong push for minimizing the losses being recorded and invest in restoring those areas that are devoid of the vegetation already. 
+
+%All article types: you may provide up to 8 keywords; at least 5 are mandatory.
+\tiny
+ \keyFont{ \section{Keywords:} Satellite image time series; Landsat data; Land cover classification; Change detection; Mangrove; Google Earth Engine } 
+
+\end{abstract}
 
 ```{r Setting-the-Scene, echo=FALSE, cache=FALSE, include=FALSE}
 set.seed(123)
@@ -1246,192 +1254,192 @@ As mentioned earlier, we used the geometrically and atmospherically corrected La
 
 ```{r ee-compute-Gambia-ndsi,include=FALSE,echo=FALSE,cache=FALSE}
 if(!file.exists('figures/Gambia_ndsi_ts.png')) {
-forest = ee$Feature(ee$Geometry$Point(list(-16.56308769256992, 13.28963613946778)), list("landcover" = "Forest"));
-builtUp =  ee$Feature(ee$Geometry$Point(list(-16.684752693485446, 13.430200802923913)), list("landcover" = "Built-up area"));
-waterBody = ee$Feature(ee$Geometry$Point(list(-15.36248737369788, 13.439409191670487)), list("landcover" = "Water body"));
-
-mangrove = ee$Feature(ee$Geometry$Point(list(-16.10459217181693, 13.303734947460672)), list("landcover" = "Mangrove"));
-
-cropland =  ee$Feature(ee$Geometry$Point(list(-14.53384636909885, 13.43041994708249)), list("landcover" = "Cropland"));
-shrubland = ee$Feature(ee$Geometry$Point(list(-14.058878328870126, 13.516739915185315)), list("landcover" = "Shrubland"));
-ndsiRegions = ee$FeatureCollection(list(
-  forest,
-  builtUp,
-  waterBody,
-  mangrove,
-  cropland, 
-  shrubland
-));
-
-sampleRegionsCollection = function(imageCollection, regions, scale, tileScale){
-  data = imageCollection$
-    map(ee_utils_pyfunc(function(image){
-      image = ee$Image(image)
-      dat = ee$Date(image$get('system:time_start')) #$format('Y/M/d');
-      val = image$reduceRegions(
-        collection = regions,
-        reducer = ee$Reducer$mean(),
-        scale = scale, 
-        tileScale = tileScale
-      );
-      
-      valOut = val$map(function(feature){
-        longlat = feature$geometry()$coordinates();
-        long    = ee$Number(longlat$get(0));
-        lat     = ee$Number(longlat$get(1));
-        outFeature = feature$
-          setGeometry(NULL)$
-          set('date', dat)$
-          set('long', long)$
-          set('lat', lat);
-        return (outFeature);
-      });
-      return (valOut);
-    }));
+  forest = ee$Feature(ee$Geometry$Point(list(-16.56308769256992, 13.28963613946778)), list("landcover" = "Forest"));
+  builtUp =  ee$Feature(ee$Geometry$Point(list(-16.684752693485446, 13.430200802923913)), list("landcover" = "Built-up area"));
+  waterBody = ee$Feature(ee$Geometry$Point(list(-15.36248737369788, 13.439409191670487)), list("landcover" = "Water body"));
   
-  return (data);
-};
-
-# Some fixed variable for easy maintenance
-NDVITargetBand = ee$List(list('green_filled', 'swir1_filled', 'NDVI_filled', 'NDWI_filled', 'EVI_filled', 'McfeeterNDWI_filled', 'temp_filled'));
-NDVITargetBandRenamed = ee$List(list('green', 'swir1', 'NDVI', 'NDWI', 'EVI', 'McfeeterNDWI', 'temp')); 
-
-### Gambia - NDVI 2018 - 2020 
-
-filteredLandsat =  collectLansatImages ('LSR', roiGambia, 2018, 2020, ee$List$sequence(1, 12), nDays, TRUE);
-
-filteredLandsat = ee$ImageCollection(filteredLandsat);
-
-filledHarmonic = harmonic_fill(filteredLandsat, NDVITargetBandRenamed, harmonics);
-
-fittedHarmonic = harmonic_fit(filledHarmonic, NDVITargetBand, harmonics, lagDays);
-
-ndsi_ts_2018_2020 = sampleRegionsCollection (fittedHarmonic, ndsiRegions, 30, 1);
-
-ee_to_drive_to_local (
-  ee_object = ndsi_ts_2018_2020$flatten(),
-  drive_description = '~/Gambia_Manuscript/ndsi_ts_2018_2020', 
-  drive_folder = 'Gambia_Manuscript', 
-  local_folder = 'ee_output',
-  overwrite = overwrite_file,
-  ee_type = 'table',
-  file_extension = '.csv'
-)
-### Gambia - NDVI 2010 - 2012 
-
-filteredLandsat =  collectLansatImages ('LSR', roiGambia, 2010, 2012, ee$List$sequence(1, 12), nDays, TRUE);
-
-filteredLandsat = ee$ImageCollection(filteredLandsat);
-
-filledHarmonic = harmonic_fill(filteredLandsat, NDVITargetBandRenamed, harmonics);
-
-fittedHarmonic = harmonic_fit(filledHarmonic, NDVITargetBand, harmonics, lagDays);
-
-ndsi_ts_2010_2012 = sampleRegionsCollection (fittedHarmonic, ndsiRegions, 30, 1);
-
-ee_to_drive_to_local (
-  ee_object = ndsi_ts_2010_2012$flatten(),
-  drive_description = '~/Gambia_Manuscript/ndsi_ts_2010_2012', 
-  drive_folder = 'Gambia_Manuscript', 
-  local_folder = 'ee_output',
-  overwrite = overwrite_file,
-  ee_type = 'table',
-  file_extension = '.csv'
-)
-### Gambia - NDVI 2000 - 2002 
-
-filteredLandsat =  collectLansatImages ('LSR', roiGambia, 2000, 2002, ee$List$sequence(1, 12), nDays, TRUE);
-
-filteredLandsat = ee$ImageCollection(filteredLandsat);
-
-filledHarmonic = harmonic_fill(filteredLandsat, NDVITargetBandRenamed, harmonics);
-
-fittedHarmonic = harmonic_fit(filledHarmonic, NDVITargetBand, harmonics, lagDays);
-
-ndsi_ts_2000_2002 = sampleRegionsCollection (fittedHarmonic, ndsiRegions, 30, 1);
-
-ee_to_drive_to_local (
-  ee_object = ndsi_ts_2000_2002$flatten(),
-  drive_description = '~/Gambia_Manuscript/ndsi_ts_2000_2002', 
-  drive_folder = 'Gambia_Manuscript', 
-  local_folder = 'ee_output',
-  overwrite = overwrite_file,
-  ee_type = 'table',
-  file_extension = '.csv'
-)
-   
-(rbind(
-  read_csv('ee_output/ndsi_ts_2010_2012.csv')%>%
-    add_column(ref_period = '2000 - 2002'),
-  read_csv('ee_output/ndsi_ts_2000_2002.csv')%>%
-    add_column(ref_period = '2010 - 2012'),
-  read_csv('ee_output/ndsi_ts_2018_2020.csv')%>%
-    add_column(ref_period = '2018 - 2020')
-) %>%
-  dplyr::select(
-    NDVI,
-    NDVI_filled,
-    NDVI_filled_filled,
-    NDVI_filled_fitted,
-    # NDVI_filled_linearTrend,
-    NDWI,
-    NDWI_filled,
-    NDWI_filled_filled,
-    NDWI_filled_fitted,
-    date,
-    long,
-    lat,
-    landcover,
-    ref_period
-  ) %>%
-  mutate(date =  as.Date(date)) %>%
-  mutate(longlat = paste0(landcover, '\n', '(Lon = ', round(long, 1), '\nLat = ', round(lat, 2), ')')) %>%
-  # mutate(year = facet_period) %>%
-  pivot_longer(cols = !c(long, lat, longlat, date, ref_period, landcover), names_sep = "_", names_to = c("t0",'t1', 't2'), values_to = 'value') %>%
-  # filter(between(value, -10, 10)) %>%
-  ggplot()+
-  # Raw data -> point with holes
-  geom_point(data = function(x) filter(x, (is.na(t1) & is.na(t2))),
-             aes(x = date, y = value, colour = landcover), shape = 1) +
-  # Harmonic filled data -> solid points
-  geom_point(data = function(x) filter(x, (!is.na(t1) & is.na(t2))),
-             aes(x = date, y = value, colour = landcover), shape = '.') +
-  # # Harmonic fitted data -> lines
-  geom_line(data = function(x) filter(x, (t2 == 'fitted')),
-            aes(x = date, y = value, colour = landcover)) +
-  # Harmonic fitted data -> point
-  geom_point(data = function(x) filter(x, (t2 == 'fitted')),
-             aes(x = date, y = value, colour = landcover)) +
-  facet_grid(t0 ~ ref_period, switch = "x", scales = 'free')+
-  scale_x_date(date_breaks = "3 months", date_minor_breaks = "1 month", date_labels =  "%b",
-               labels=function(x) sub(" ","d",x,fixed=TRUE),
-               expand = c(0.025,0.025)
-  )+
-  scale_y_continuous(
-    expand = c(0.025,0.025)
-  )+
-  theme_linedraw()+
-  theme(
-    panel.grid = element_blank(),
-    panel.spacing = unit(0.5, 'mm'),
-    legend.position = c(0.5, 0.5),
-    legend.direction = 'horizontal',
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    axis.title = element_blank(),
-    axis.text.x = element_text(angle = 0, hjust = 0.5, vjust = 0.5),
-    plot.margin = margin(0,0,0,0),
-    # ,
-    strip.background = element_rect(fill = 'lightgray', colour = 'lightgray'),
-    strip.text = element_text(colour = 'black')
-  ) +
-  guides(colour=guide_legend(nrow=1,byrow=TRUE))+
-  scale_colour_manual(values = c('red', 'yellow', 'forestgreen', 'cyan', 'brown', 'blue'))) %>%
-  ggsave(
-    filename = 'figures/Gambia_ndsi_ts.png', device = 'png', 
-    width = 361, height = 181,
-    units = 'mm', dpi = 300
+  mangrove = ee$Feature(ee$Geometry$Point(list(-16.10459217181693, 13.303734947460672)), list("landcover" = "Mangrove"));
+  
+  cropland =  ee$Feature(ee$Geometry$Point(list(-14.53384636909885, 13.43041994708249)), list("landcover" = "Cropland"));
+  shrubland = ee$Feature(ee$Geometry$Point(list(-14.058878328870126, 13.516739915185315)), list("landcover" = "Shrubland"));
+  ndsiRegions = ee$FeatureCollection(list(
+    forest,
+    builtUp,
+    waterBody,
+    mangrove,
+    cropland, 
+    shrubland
+  ));
+  
+  sampleRegionsCollection = function(imageCollection, regions, scale, tileScale){
+    data = imageCollection$
+      map(ee_utils_pyfunc(function(image){
+        image = ee$Image(image)
+        dat = ee$Date(image$get('system:time_start')) #$format('Y/M/d');
+        val = image$reduceRegions(
+          collection = regions,
+          reducer = ee$Reducer$mean(),
+          scale = scale, 
+          tileScale = tileScale
+        );
+        
+        valOut = val$map(function(feature){
+          longlat = feature$geometry()$coordinates();
+          long    = ee$Number(longlat$get(0));
+          lat     = ee$Number(longlat$get(1));
+          outFeature = feature$
+            setGeometry(NULL)$
+            set('date', dat)$
+            set('long', long)$
+            set('lat', lat);
+          return (outFeature);
+        });
+        return (valOut);
+      }));
+    
+    return (data);
+  };
+  
+  # Some fixed variable for easy maintenance
+  NDVITargetBand = ee$List(list('green_filled', 'swir1_filled', 'NDVI_filled', 'NDWI_filled', 'EVI_filled', 'McfeeterNDWI_filled', 'temp_filled'));
+  NDVITargetBandRenamed = ee$List(list('green', 'swir1', 'NDVI', 'NDWI', 'EVI', 'McfeeterNDWI', 'temp')); 
+  
+  ### Gambia - NDVI 2018 - 2020 
+  
+  filteredLandsat =  collectLansatImages ('LSR', roiGambia, 2018, 2020, ee$List$sequence(1, 12), nDays, TRUE);
+  
+  filteredLandsat = ee$ImageCollection(filteredLandsat);
+  
+  filledHarmonic = harmonic_fill(filteredLandsat, NDVITargetBandRenamed, harmonics);
+  
+  fittedHarmonic = harmonic_fit(filledHarmonic, NDVITargetBand, harmonics, lagDays);
+  
+  ndsi_ts_2018_2020 = sampleRegionsCollection (fittedHarmonic, ndsiRegions, 30, 1);
+  
+  ee_to_drive_to_local (
+    ee_object = ndsi_ts_2018_2020$flatten(),
+    drive_description = '~/Gambia_Manuscript/ndsi_ts_2018_2020', 
+    drive_folder = 'Gambia_Manuscript', 
+    local_folder = 'ee_output',
+    overwrite = overwrite_file,
+    ee_type = 'table',
+    file_extension = '.csv'
   )
+  ### Gambia - NDVI 2010 - 2012 
+  
+  filteredLandsat =  collectLansatImages ('LSR', roiGambia, 2010, 2012, ee$List$sequence(1, 12), nDays, TRUE);
+  
+  filteredLandsat = ee$ImageCollection(filteredLandsat);
+  
+  filledHarmonic = harmonic_fill(filteredLandsat, NDVITargetBandRenamed, harmonics);
+  
+  fittedHarmonic = harmonic_fit(filledHarmonic, NDVITargetBand, harmonics, lagDays);
+  
+  ndsi_ts_2010_2012 = sampleRegionsCollection (fittedHarmonic, ndsiRegions, 30, 1);
+  
+  ee_to_drive_to_local (
+    ee_object = ndsi_ts_2010_2012$flatten(),
+    drive_description = '~/Gambia_Manuscript/ndsi_ts_2010_2012', 
+    drive_folder = 'Gambia_Manuscript', 
+    local_folder = 'ee_output',
+    overwrite = overwrite_file,
+    ee_type = 'table',
+    file_extension = '.csv'
+  )
+  ### Gambia - NDVI 2000 - 2002 
+  
+  filteredLandsat =  collectLansatImages ('LSR', roiGambia, 2000, 2002, ee$List$sequence(1, 12), nDays, TRUE);
+  
+  filteredLandsat = ee$ImageCollection(filteredLandsat);
+  
+  filledHarmonic = harmonic_fill(filteredLandsat, NDVITargetBandRenamed, harmonics);
+  
+  fittedHarmonic = harmonic_fit(filledHarmonic, NDVITargetBand, harmonics, lagDays);
+  
+  ndsi_ts_2000_2002 = sampleRegionsCollection (fittedHarmonic, ndsiRegions, 30, 1);
+  
+  ee_to_drive_to_local (
+    ee_object = ndsi_ts_2000_2002$flatten(),
+    drive_description = '~/Gambia_Manuscript/ndsi_ts_2000_2002', 
+    drive_folder = 'Gambia_Manuscript', 
+    local_folder = 'ee_output',
+    overwrite = overwrite_file,
+    ee_type = 'table',
+    file_extension = '.csv'
+  )
+  
+  (rbind(
+    read_csv('ee_output/ndsi_ts_2010_2012.csv')%>%
+      add_column(ref_period = '2000 - 2002'),
+    read_csv('ee_output/ndsi_ts_2000_2002.csv')%>%
+      add_column(ref_period = '2010 - 2012'),
+    read_csv('ee_output/ndsi_ts_2018_2020.csv')%>%
+      add_column(ref_period = '2018 - 2020')
+  ) %>%
+      dplyr::select(
+        NDVI,
+        NDVI_filled,
+        NDVI_filled_filled,
+        NDVI_filled_fitted,
+        # NDVI_filled_linearTrend,
+        NDWI,
+        NDWI_filled,
+        NDWI_filled_filled,
+        NDWI_filled_fitted,
+        date,
+        long,
+        lat,
+        landcover,
+        ref_period
+      ) %>%
+      mutate(date =  as.Date(date)) %>%
+      mutate(longlat = paste0(landcover, '\n', '(Lon = ', round(long, 1), '\nLat = ', round(lat, 2), ')')) %>%
+      # mutate(year = facet_period) %>%
+      pivot_longer(cols = !c(long, lat, longlat, date, ref_period, landcover), names_sep = "_", names_to = c("t0",'t1', 't2'), values_to = 'value') %>%
+      # filter(between(value, -10, 10)) %>%
+      ggplot()+
+      # Raw data -> point with holes
+      geom_point(data = function(x) filter(x, (is.na(t1) & is.na(t2))),
+                 aes(x = date, y = value, colour = landcover), shape = 1) +
+      # Harmonic filled data -> solid points
+      geom_point(data = function(x) filter(x, (!is.na(t1) & is.na(t2))),
+                 aes(x = date, y = value, colour = landcover), shape = '.') +
+      # # Harmonic fitted data -> lines
+      geom_line(data = function(x) filter(x, (t2 == 'fitted')),
+                aes(x = date, y = value, colour = landcover)) +
+      # Harmonic fitted data -> point
+      geom_point(data = function(x) filter(x, (t2 == 'fitted')),
+                 aes(x = date, y = value, colour = landcover)) +
+      facet_grid(t0 ~ ref_period, switch = "x", scales = 'free')+
+      scale_x_date(date_breaks = "3 months", date_minor_breaks = "1 month", date_labels =  "%b",
+                   labels=function(x) sub(" ","d",x,fixed=TRUE),
+                   expand = c(0.025,0.025)
+      )+
+      scale_y_continuous(
+        expand = c(0.025,0.025)
+      )+
+      theme_linedraw()+
+      theme(
+        panel.grid = element_blank(),
+        panel.spacing = unit(0.5, 'mm'),
+        legend.position = c(0.5, 0.5),
+        legend.direction = 'horizontal',
+        legend.title = element_blank(),
+        legend.text = element_text(size = 14),
+        axis.title = element_blank(),
+        axis.text.x = element_text(angle = 0, hjust = 0.5, vjust = 0.5),
+        plot.margin = margin(0,0,0,0),
+        # ,
+        strip.background = element_rect(fill = 'lightgray', colour = 'lightgray'),
+        strip.text = element_text(colour = 'black')
+      ) +
+      guides(colour=guide_legend(nrow=1,byrow=TRUE))+
+      scale_colour_manual(values = c('red', 'yellow', 'forestgreen', 'cyan', 'brown', 'blue'))) %>%
+    ggsave(
+      filename = 'figures/Gambia_ndsi_ts.png', device = 'png', 
+      width = 361, height = 181,
+      units = 'mm', dpi = 300
+    )
 }
 ```
 
@@ -1580,70 +1588,451 @@ tibble(
   kable_styling(latex_options = c("repeat_header", "scale_down"))
 ```
 
-```{r r-compute-classification-maps,include=FALSE,echo=FALSE,cache=FALSE}
-if(!file.exists('figures/Gambia_classifications.png')) {
-  # source("source_files/r/Gambia_classification.R")
-  legend_table <- ggplot(data=data.frame(x = 1, 
-                                         myPalette = factor(1:16, labels = myPalette),
-                                         className = className))+
-    geom_bar(aes(x, fill = myPalette) 
-             # colour = 'white', size=2
-    )+
-    scale_fill_identity(labels = className, guide = 'legend', name = 'Land use and land cover')+
-    guides(fill=guide_legend(nrow=2))+
-    theme(
-      legend.background = element_rect(fill = 'gray'),
-      legend.title = element_text(size = 10, face = 'bold'),
-      # legend.text = element_text(size = 10),
-      legend.position = 'bottom'
+```{r r-compute-classification-slices-maps,include=FALSE,echo=FALSE,cache=FALSE}
+if(!file.exists('figures/Gambia_classifications_slices_1.png')) {
+## Raster stack ####
+stk <- raster::stack(
+  list(
+    'ee_output/Gambia_classified_2000_2002.tif',
+    'ee_output/Gambia_classified_2010_2012.tif',
+    'ee_output/Gambia_classified_2018_2020.tif'
+  )
+) %>% 
+  `names<-`(
+    str_replace_all(names(.), c(
+      "Gambia_classified_2000_2002" = "Gambia_classified_2000", 
+      "Gambia_classified_2010_2012" = "Gambia_classified_2010",
+      "Gambia_classified_2018_2020" = "Gambia_classified_2020"
     )
+    )
+  )
+
+# Stable sites
+Tanbi_wetland_reserve =   extent(
+  matrix(
+    c(
+      -16.667836644854212, 13.491574747844856,
+      -16.667836644854212, 13.367684925708033,
+      -16.474545934404993, 13.367684925708033,
+      -16.474545934404993, 13.491574747844856
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# decrease
+Bambali_Island = extent(
+  matrix(
+    c(
+      -15.46311710139718, 13.542648099464277,
+      -15.46311710139718, 13.418784703127137,
+      -15.269826390947962, 13.418784703127137,
+      -15.269826390947962, 13.542648099464277
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# increase_spread
+Bolingho = extent(
+  matrix(
+    c(
+      -15.719922521319056, 13.54131298784182,
+      -15.719922521319056, 13.417448899452445,
+      -15.526631810869837, 13.417448899452445,
+      -15.526631810869837, 13.54131298784182
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+legend_table <- ggplot(
+  data=data.frame(
+    x = rep(1, length(myPalette)), y = rep(1, length(myPalette)), 
+    myPalette = factor(1:16, labels = myPalette),
+    className = className,
+    variable = '2000'
+  ) %>% rbind(
+    . 
+  )
+)+
+  geom_bar(aes(x, fill = myPalette) 
+           # colour = 'white', size=2
+  )+
+  scale_fill_identity(labels = className, guide = 'legend', name = 'Land use\nand\nland cover')+
+  guides(fill=guide_legend(nrow=2))+
   
-  legend_table <- cowplot::get_legend(legend_table) 
+  theme(
+    legend.background = element_rect(fill = 'gray'),
+    legend.title = element_text(size = 10, face = 'bold'),
+    legend.title.align=0.5,
+    legend.position = 'bottom'
+  )
+
+legend_table <- cowplot::get_legend(legend_table) 
+
+my_theme <-
+  theme_linedraw ()+
+  theme(
+    axis.title = element_blank(),
+    strip.text = element_text(colour = 'black', size = 12, face = 'bold', margin = margin(t = 0, r = 0, b = 0, l = 0)),
+    legend.position = 'none',
+    strip.background = element_rect(fill = 'gray', colour = 'gray'),
+    panel.spacing = unit(0.5, 'mm'),
+    plot.margin = margin(0,0,0,0)
+  )
+blanc_grid_theme_x = theme(
+  strip.text = element_text(size = 10),
+  strip.text.x = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank()
+)
+blanc_grid_theme_y = theme(
+  strip.text = element_text(size = 10),
+  strip.text.y = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank()
+)
+facet_grid_theme = theme(
+  strip.text = element_text(size = 10),
+  axis.text = element_blank(),
+  axis.ticks = element_blank()
+)
+
+water_poly_path <- "ee_output/Gambia_waters_polygons/Gambia_waters_polygons.shp"
+
+ghana_shp=read_rds('data_files/Gambia_shp_edited_RDS.rds')
+
+coast_line <- read_rds('data_files/Gambia_shp_edited_RDS.rds') %>%
+  `st_crs<-`(4326) 
+# %>%
+#   rbind(
+#     getData('GADM', country='SEN', level=0, path = 'data_files') %>%
+#       st_as_sf() %>%
+#       `st_crs<-`(4326)
+#   )
+
+coast_line = 
+  ggplot()+ 
+  geom_sf(data = coast_line, fill = NA)+ 
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Tanbi_wetland_reserve)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Tanbi_wetland_reserve)), crs = 4326),
+               aes(label = 'Tanbi\nWetlands'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Bambali_Island)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Bambali_Island)), crs = 4326),
+               aes(label = 'Bambali\nIsland'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Bolingho)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Bolingho)), crs = 4326),
+               aes(label = 'Bolingho'), colour = "black")+
   
-  (raster::stack(
-    list(
-      'ee_output/Gambia_classified_2000_2002.tif',
-      'ee_output/Gambia_classified_2010_2012.tif',
-      'ee_output/Gambia_classified_2018_2020.tif'
-    )
-  ) %>%
-      rasterVis::gplot(maxpixels = maxpixels) + 
-      geom_tile(aes(fill = value)) +
-      facet_wrap(~ variable, ncol = 1, labeller = as_labeller(
-        c(
-          Gambia_classified_2000_2002 = '2000-classification',
-          Gambia_classified_2010_2012 = '2010-classification',
-          Gambia_classified_2018_2020 = '2020-classification'
-        )
-      )) +
-      scale_fill_gradientn(colours = myPalette, na.value="white") +
-      coord_sf(crs = 4326, expand = FALSE)+
-      # scale_x_continuous(expand = c(0,0))+
-      # scale_y_continuous(expand = c(0,0))+
-      # labs(x = 'Longitude', y = 'Latitude')+
-      theme_linedraw ()+
-      theme(
-        # axis.title = element_text(size = 10),
-        # axis.text = element_text(size = 10),
-        axis.title = element_blank(),
-        strip.text.x = element_text(colour = 'black', size = 12, face = 'bold', margin = margin(t = 0, b = 0)),
-        legend.position = 'none',
-        strip.background = element_blank(),
-        # plot.margin = margin(0.5,0.5,0.5,0.5),
-        plot.margin = margin(0,0,0,0)
-      )
-  ) %>%
-    grid.arrange(legend_table, ncol=1, heights=c(1, 0.06)) %>%
-    ggsave(
-      filename = 'figures/Gambia_classifications.png', device = 'png',
-      # width =  7.87, height = 7.81
-      width = 11.2, height = 9.81
-    )
+  coord_sf(expand = FALSE)+
+  theme_minimal()+
+  theme(
+    plot.margin = margin(0,0,0,0),
+    axis.title = element_blank()
+  )
+
+Tanbi_wetland_reserve <- stk %>%
+  crop(Tanbi_wetland_reserve) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Tanbi_Wetland') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Bambali_Island <- stk %>%
+  crop(Bambali_Island) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Bambali_Island') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Bolingho <- stk %>%
+  crop(Bolingho) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Bolingho') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+grid.arrange(
+  coast_line,
+  Tanbi_wetland_reserve + facet_grid_theme,
+  Bambali_Island + blanc_grid_theme_x,
+  Bolingho + blanc_grid_theme_x,
+  legend_table,
+  ncol = 1,
+  heights = c(1.095, 0.95, 0.9, 0.9, 0.2)
+) %>% ggsave(
+  filename = 'figures/Gambia_classifications_slices_1.png',
+  width = 10.25,
+  height = 10.1
+)
+
+# stable
+Niumi_national_park = extent(
+  matrix(
+    c(
+      -16.63915093332755, 13.766020186456542,
+      -16.63915093332755, 13.491755590673906,
+      -16.439680413308018, 13.491755590673906,
+      -16.439680413308018, 13.766020186456542
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+# Decrease
+Darsilami = extent(
+  matrix(
+    c(
+      -16.815618828835362, 13.339472434884375,
+      -16.815618828835362, 13.064720113622773,
+      -16.61614830881583, 13.064720113622773,
+      -16.61614830881583, 13.339472434884375
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# the small one
+Darsilami =   extent(
+  matrix(
+    c(
+      -16.746876292236728, 13.161934529721556,
+      -16.746876292236728, 13.065301726044805,
+      -16.67237525463907, 13.065301726044805,
+      -16.67237525463907, 13.161934529721556
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# increase
+Bitang_Bolon = extent(
+  matrix(
+    c(
+      -16.311030849165963, 13.335423003157722,
+      -16.311030849165963, 13.219140307381195,
+      -15.901790126509713, 13.219140307381195,
+      -15.901790126509713, 13.335423003157722
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+Mini_minium_Bolon = extent(
+  matrix(
+    c(
+      -16.253942803444737, 13.693314407608959,
+      -16.253942803444737, 13.418965600932344,
+      -16.054472283425206, 13.418965600932344,
+      -16.054472283425206, 13.693314407608959
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+water_poly_path <- "ee_output/Gambia_waters_polygons/Gambia_waters_polygons.shp"
+
+ghana_shp=read_rds('data_files/Gambia_shp_edited_RDS.rds')
+
+coast_line <- read_rds('data_files/Gambia_shp_edited_RDS.rds') %>%
+  `st_crs<-`(4326) 
+
+coast_line = 
+  ggplot()+ 
+  geom_sf(data = coast_line, fill = NA)+ 
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Mini_minium_Bolon)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Mini_minium_Bolon)), crs = 4326),
+               aes(label = 'Mini\nminium\nBolon'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Bitang_Bolon)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Bitang_Bolon)), crs = 4326),
+               aes(label = 'Bitang\nBolon'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Darsilami)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Darsilami)), crs = 4326),
+               aes(label = 'Darsilami'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Niumi_national_park)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Niumi_national_park)), crs = 4326),
+               aes(label = 'Niumi\nnational\npark'), colour = "black")+
+  
+  coord_sf(expand = FALSE)+
+  theme_minimal()+
+  theme(
+    plot.margin = margin(0,0,0,0),
+    axis.title = element_blank()
+  )
+
+Niumi_national_park <- stk %>%
+  crop(Niumi_national_park) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Niumi_national_park') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Darsilami <- stk %>%
+  crop(Darsilami) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Darsilami') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Bitang_Bolon <- stk %>%
+  crop(Bitang_Bolon) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Bitang_Bolon') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Mini_minium_Bolon <- stk %>%
+  crop(Mini_minium_Bolon) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Mini_minium_Bolon') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_classified_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value=NA) +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+legend_table <- ggplot(
+  data=data.frame(
+    x = rep(1, length(myPalette)), y = rep(1, length(myPalette)), 
+    myPalette = factor(1:16, labels = myPalette),
+    className = className,
+    variable = '2000'
+  ) %>% rbind(
+    . 
+  )
+)+
+  geom_bar(aes(x, fill = myPalette) 
+           # colour = 'white', size=2
+  )+
+  scale_fill_identity(labels = className, guide = 'legend', name = 'Land use and land cover')+
+  guides(fill=guide_legend(ncol=4))+
+  theme(
+    legend.background = element_rect(fill = 'gray'),
+    legend.title = element_text(size = 10, face = 'bold'),
+    legend.title.align=0.5,
+    legend.position = 'right'
+  )
+
+legend_table <- cowplot::get_legend(legend_table) 
+grid.arrange(
+  coast_line,
+  Bitang_Bolon + facet_grid_theme,
+  arrangeGrob(
+    Niumi_national_park + facet_grid_theme,
+    Mini_minium_Bolon + facet_grid_theme,
+    ncol = 2
+  ),
+  arrangeGrob(
+    Darsilami + blanc_grid_theme_x,
+    legend_table,
+    ncol = 2
+  ),
+  ncol = 1,
+  heights = c(
+    0.55,
+    0.225,
+    0.5, 
+    0.45
+  )
+)%>% ggsave(
+  filename = 'figures/Gambia_classifications_slices_2.png',
+  width = 12.1,
+  height = 10.1
+)
 }
 ```
 
-```{r fig3,echo=FALSE,out.width='100%',fig.cap="Land use and land cover classifications and changes based on continuous time series of monthly median composite of Landsat NDVI and NDWI acquired over the period 2000 – 2002 (2000-classification), 2010-classification and the period 2018 – 2020 (2020-classification) in The Gambia. These maps were derived by filling data gaps in the Landsat monthly composite using harmonic modelling after filling those gaps where MODIS NDVI and NDWI were available. Land use and land cover changes were estimated using image differencing."}
-knitr::include_graphics("figures/Gambia_classifications.png")
+```{r fig3,echo=FALSE,out.width='100%',fig.cap="Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020."}
+knitr::include_graphics("figures/Gambia_classifications_slices_1.png")
+```
+
+```{r fig4,echo=FALSE,out.width='100%',fig.cap="Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020."}
+knitr::include_graphics("figures/Gambia_classifications_slices_2.png")
 ```
 
 ## Overall land use and land cover changes between 2000 and 2020 {#ref42}
@@ -1779,82 +2168,473 @@ tibble(
 
 As also presented in Table 4, most of the mangrove area gains were recorded in the period 2010-2020. This could be largely attributed to growing awareness about the importance of this vegetation type for coastal area resilience and the livelihoods of thousands who depend on it [@Moudingo-et-al-2019; @Feka-and-Morrison-2017]. Indeed, the growing restoration efforts in the country through the support of multilateral and bilateral projects may have positively contributed to this increase. The main emphasis on the mangroves is, in fact, after the broad realization of the growing threats of climate change (e.g., sea level rise) on livelihoods and infrastructures which mangroves and other coastal vegetation could protect strongly. 
 
-```{r r-compute-Gambia-mangroves-change-direction-maps,include=FALSE,echo=FALSE,cache=FALSE}
-if(!file.exists('figures/Gambia_change_direction.png')) {
-  # source("source_files/r/Gambia_mangroves_change_direction.R")
-  className = c(
-    'Increase',
-    'Decrease',
-    'Stable'
+
+```{r r-compute-Gambia-mangroves-change-direction-slices-maps,include=FALSE,echo=FALSE,cache=FALSE}
+if(!file.exists('figures/Gambia_change_direction_slices_1.png')) {
+ ## Raster stack ####
+stk <- raster::stack(
+  list(
+    'ee_output/Gambia_mangrove_change_magnitude_2000_2010.tif',
+    'ee_output/Gambia_mangrove_change_magnitude_2010_2020.tif',
+    'ee_output/Gambia_mangrove_change_magnitude_2000_2020.tif'
   )
-  myPalette <- c(
-    'forestgreen',
-    'red',
-    'blue'
+) 
+
+# Stable sites
+Tanbi_wetland_reserve =   extent(
+  matrix(
+    c(
+      -16.667836644854212, 13.491574747844856,
+      -16.667836644854212, 13.367684925708033,
+      -16.474545934404993, 13.367684925708033,
+      -16.474545934404993, 13.491574747844856
+    ),
+    ncol = 2,
+    byrow = TRUE
   )
-  legend_table <- ggplot(data=data.frame(x = 1, 
-                                         myPalette = factor(1:length(className), labels = myPalette),
-                                         className = className))+
-    geom_bar(aes(x, fill = myPalette) 
-             # colour = 'white', size=2
-    )+
-    scale_fill_identity(labels = className, guide = 'legend', name = 'Land use and land cover')+
-    guides(fill=guide_legend(nrow=1))+
-    theme(
-      legend.background = element_rect(fill = 'gray'),
-      legend.title = element_text(size = 10, face = 'bold'),
-      # legend.text = element_text(size = 10),
-      legend.margin = margin(t = 1, b = 1, l = 256, r = 256),
-      legend.position = 'bottom'
-    )
+)
+# decrease
+Bambali_Island = extent(
+  matrix(
+    c(
+      -15.46311710139718, 13.542648099464277,
+      -15.46311710139718, 13.418784703127137,
+      -15.269826390947962, 13.418784703127137,
+      -15.269826390947962, 13.542648099464277
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# increase_spread
+Bolingho = extent(
+  matrix(
+    c(
+      -15.719922521319056, 13.54131298784182,
+      -15.719922521319056, 13.417448899452445,
+      -15.526631810869837, 13.417448899452445,
+      -15.526631810869837, 13.54131298784182
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+className = c(
+  'Increase',
+  'Decrease',
+  'Stable'
+)
+myPalette <- c(
+  'forestgreen',
+  'red',
+  'blue'
+)
+legend_table <- ggplot(data=data.frame(x = 1, 
+                                       myPalette = factor(1:length(className), labels = myPalette),
+                                       className = className))+
+  geom_bar(aes(x, fill = myPalette) 
+           # colour = 'white', size=2
+  )+
+  scale_fill_identity(labels = className, guide = 'legend', name = 'Change direction')+
+  guides(fill=guide_legend(nrow=1))+
+  theme(
+    legend.background = element_rect(fill = 'gray'),
+    legend.title = element_text(size = 10, face = 'bold'),
+    # legend.text = element_text(size = 10),
+    # legend.margin = margin(t = 1, b = 1, l = 256, r = 256),
+    legend.margin = margin(t = 0.5, b = 0.5, l = 256, r = 256),
+    # legend.margin = margin(t = 0.75, b = 0.75, l = 0.75, r = 0.75),
+    legend.position = 'bottom',
+  )
+
+legend_table <- cowplot::get_legend(legend_table) 
+
+my_theme <-
+  theme_linedraw ()+
+  theme(
+    axis.title = element_blank(),
+    strip.text = element_text(colour = 'black', size = 12, face = 'bold', margin = margin(t = 0, r = 0, b = 0, l = 0)),
+    legend.position = 'none',
+    # strip.background = element_blank(),
+    strip.background = element_rect(fill = 'gray', colour = 'gray'),
+    panel.spacing = unit(0.5, 'mm'),
+    plot.margin = margin(0,0,0,0)
+  )
+blanc_grid_theme_x = theme(
+  strip.text = element_text(size = 10),
+  strip.text.x = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank()
+)
+blanc_grid_theme_y = theme(
+  strip.text = element_text(size = 10),
+  strip.text.y = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank()
+)
+facet_grid_theme = theme(
+  strip.text = element_text(size = 10),
+  # strip.text.x = element_blank(),
+  axis.text = element_blank(),
+  axis.ticks = element_blank()
+)
+
+water_poly_path <- "ee_output/Gambia_waters_polygons/Gambia_waters_polygons.shp"
+
+ghana_shp=read_rds('data_files/Gambia_shp_edited_RDS.rds')
+
+coast_line <- read_rds('data_files/Gambia_shp_edited_RDS.rds') %>%
+  `st_crs<-`(4326) 
+# %>%
+#   rbind(
+#     getData('GADM', country='SEN', level=0, path = 'data_files') %>%
+#       st_as_sf() %>%
+#       `st_crs<-`(4326)
+#   )
+
+coast_line = 
+  ggplot()+ 
+  # geom_sf(data = st_read(water_poly_path) %>% 
+  #           st_transform(crs = 4326) %>%
+  #           st_crop(st_bbox(coast_line)),
+  #         size = 0.10,
+  #         fill = "#D8F1FF",
+  #         colour = "#D8F1FF"
+  # )+
+  geom_sf(data = coast_line, fill = NA)+ 
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Tanbi_wetland_reserve)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Tanbi_wetland_reserve)), crs = 4326),
+               aes(label = 'Tanbi\nWetlands'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Bambali_Island)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Bambali_Island)), crs = 4326),
+               aes(label = 'Bambali\nIsland'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Bolingho)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Bolingho)), crs = 4326),
+               aes(label = 'Bolingho'), colour = "black")+
   
-  legend_table <- cowplot::get_legend(legend_table) 
+  coord_sf(expand = FALSE)+
+  theme_minimal()+
+  theme(
+    plot.margin = margin(0,0,0,0),
+    axis.title = element_blank()
+  )
+
+Tanbi_wetland_reserve <- stk %>%
+  crop(Tanbi_wetland_reserve) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Tanbi_Wetland') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette,na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Bambali_Island <- stk %>%
+  crop(Bambali_Island) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Bambali_Island') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette,na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Bolingho <- stk %>%
+  crop(Bolingho) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Bolingho') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette, na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+grid.arrange(
+  coast_line,
+  Tanbi_wetland_reserve + facet_grid_theme,
+  Bambali_Island + blanc_grid_theme_x,
+  Bolingho + blanc_grid_theme_x,
+  legend_table,
+  ncol = 1,
+  # heights = c(1.1, 0.98, 0.95, 0.95)
+  heights = c(1.095, 0.95, 0.9, 0.9, 0.05)
+)%>% ggsave(
+  filename = 'figures/Gambia_change_direction_slices_1.png',
+  width = 10.7,
+  height = 10.1
+)
+
+# stable
+Niumi_national_park = extent(
+  matrix(
+    c(
+      -16.63915093332755, 13.766020186456542,
+      -16.63915093332755, 13.491755590673906,
+      -16.439680413308018, 13.491755590673906,
+      -16.439680413308018, 13.766020186456542
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+# Decrease
+Darsilami = extent(
+  matrix(
+    c(
+      -16.815618828835362, 13.339472434884375,
+      -16.815618828835362, 13.064720113622773,
+      -16.61614830881583, 13.064720113622773,
+      -16.61614830881583, 13.339472434884375
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# the small one
+Darsilami =   extent(
+  matrix(
+    c(
+      -16.746876292236728, 13.161934529721556,
+      -16.746876292236728, 13.065301726044805,
+      -16.67237525463907, 13.065301726044805,
+      -16.67237525463907, 13.161934529721556
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+# increase
+Bitang_Bolon = extent(
+  matrix(
+    c(
+      -16.311030849165963, 13.335423003157722,
+      -16.311030849165963, 13.219140307381195,
+      -15.901790126509713, 13.219140307381195,
+      -15.901790126509713, 13.335423003157722
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+Mini_minium_Bolon = extent(
+  matrix(
+    c(
+      -16.253942803444737, 13.693314407608959,
+      -16.253942803444737, 13.418965600932344,
+      -16.054472283425206, 13.418965600932344,
+      -16.054472283425206, 13.693314407608959
+    ),
+    ncol = 2,
+    byrow = TRUE
+  )
+)
+
+water_poly_path <- "ee_output/Gambia_waters_polygons/Gambia_waters_polygons.shp"
+
+ghana_shp=read_rds('data_files/Gambia_shp_edited_RDS.rds')
+
+coast_line <- read_rds('data_files/Gambia_shp_edited_RDS.rds') %>%
+  `st_crs<-`(4326) 
+# %>%
+#   rbind(
+#     getData('GADM', country='SEN', level=0, path = 'data_files') %>%
+#       st_as_sf() %>%
+#       `st_crs<-`(4326)
+#   )
+
+coast_line = 
+  ggplot()+ 
+  # geom_sf(data = st_read(water_poly_path) %>% 
+  #           st_transform(crs = 4326) %>%
+  #           st_crop(st_bbox(coast_line)),
+  #         size = 0.10,
+  #         fill = "#D8F1FF",
+  #         colour = "#D8F1FF"
+  # )+
+  geom_sf(data = coast_line, fill = NA)+ 
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Mini_minium_Bolon)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Mini_minium_Bolon)), crs = 4326),
+               aes(label = 'Mini\nminium\nBolon'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Bitang_Bolon)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Bitang_Bolon)), crs = 4326),
+               aes(label = 'Bitang\nBolon'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Darsilami)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Darsilami)), crs = 4326),
+               aes(label = 'Darsilami'), colour = "black")+
+  ##
+  geom_sf(
+    data = st_as_sf(st_as_sfc(st_bbox(Niumi_national_park)), crs = 4326),
+    fill = NA, colour = 'red'
+  )+
+  geom_sf_text(data = st_as_sf(st_as_sfc(st_bbox(Niumi_national_park)), crs = 4326),
+               aes(label = 'Niumi\nnational\npark'), colour = "black")+
   
-  (raster::stack(
-    list(
-      'ee_output/Gambia_mangrove_change_magnitude_2000_2010.tif',
-      'ee_output/Gambia_mangrove_change_magnitude_2010_2020.tif',
-      'ee_output/Gambia_mangrove_change_magnitude_2000_2020.tif'
-    )
-  ) %>%
-      rasterVis::gplot(maxpixels = maxpixels) + 
-      geom_tile(aes(fill = value)) +
-      facet_wrap(~ variable, ncol = 1, labeller = as_labeller(
-        c(
-          Gambia_mangrove_change_magnitude_2000_2010 = '2000 - 2010 change direction',
-          Gambia_mangrove_change_magnitude_2010_2020 = '2010 - 2020 change direction',
-          Gambia_mangrove_change_magnitude_2000_2020 = '2000 - 2020 change direction'
-        )
-      )) +
-      scale_fill_gradientn(colours = myPalette, na.value="white") +
-      coord_sf(crs = 4326, expand = FALSE)+
-      # scale_x_continuous(expand = c(0,0))+
-      # scale_y_continuous(expand = c(0,0))+
-      # labs(x = 'Longitude', y = 'Latitude')+
-      theme_linedraw ()+
-      theme(
-        # axis.title = element_text(size = 10),
-        # axis.text = element_text(size = 10),
-        axis.title = element_blank(),
-        strip.text.x = element_text(colour = 'black', size = 12, face = 'bold', margin = margin(t = 0, b = 0)),
-        legend.position = 'none',
-        strip.background = element_blank(),
-        # plot.margin = margin(0.5,0.5,0.5,0.5),
-        plot.margin = margin(0,0,0,0)
-      )
-  ) %>%
-    grid.arrange(legend_table, ncol=1, heights=c(1, 0.025)) %>%
-    ggsave(
-      filename = 'figures/Gambia_change_direction.png', device = 'png',
-      # width =  7.87, height = 7.81
-      # width = 11.2, height = 9.81
-      width = 11.2, height = 9.46
-    )
+  coord_sf(expand = FALSE)+
+  theme_minimal()+
+  theme(
+    plot.margin = margin(0,0,0,0),
+    axis.title = element_blank()
+  )
+
+Niumi_national_park <- stk %>%
+  crop(Niumi_national_park) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Niumi_national_park') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette,na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Darsilami <- stk %>%
+  crop(Darsilami) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Darsilami') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette,na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Bitang_Bolon <- stk %>%
+  crop(Bitang_Bolon) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Bitang_Bolon') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette,na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+Mini_minium_Bolon <- stk %>%
+  crop(Mini_minium_Bolon) %>%
+  gplot_data(maxpixels = maxpixels) %>%
+  add_column(aoi_name = 'Mini_minium_Bolon') %>%
+  mutate(aoi_name = factor(aoi_name, levels = unique(aoi_name))) %>%
+  mutate(variable = gsub('Gambia_mangrove_change_magnitude_', '', variable)) %>%
+  mutate(variable = gsub('_', ' - ', variable)) %>%
+  mutate(aoi_name = gsub('_', ' ', aoi_name)) %>%
+  ggplot()+
+  geom_tile(aes(x, y, fill = value))+
+  facet_grid(rows = vars(aoi_name), cols = vars(variable))+
+  scale_fill_gradientn(colours = myPalette,na.value='white') +
+  coord_sf(crs = 4326, expand = FALSE) +
+  my_theme
+
+legend_table <- ggplot(
+  data=data.frame(
+    x = rep(1, length(myPalette)), y = rep(1, length(myPalette)), 
+    myPalette = factor(1:3, labels = myPalette),
+    className = className,
+    variable = '2000'
+  ) %>% rbind(
+    . 
+  )
+)+
+  geom_bar(aes(x, fill = myPalette) 
+           # colour = 'white', size=2
+  )+
+  scale_fill_identity(labels = className, guide = 'legend', name = 'Change direction')+
+  guides(fill=guide_legend(ncol=4))+
+  theme(
+    legend.background = element_rect(fill = 'gray'),
+    legend.title = element_text(size = 10, face = 'bold'),
+    legend.title.align=0.5,
+    legend.position = 'right'
+  )
+
+legend_table <- cowplot::get_legend(legend_table) 
+
+grid.arrange(
+  coast_line,
+  Bitang_Bolon + facet_grid_theme,
+  arrangeGrob(
+    Niumi_national_park + facet_grid_theme,
+    Mini_minium_Bolon + facet_grid_theme,
+    ncol = 2
+  ),
+  arrangeGrob(
+    Darsilami + blanc_grid_theme_x,
+    legend_table,
+    ncol = 2
+  ),
+  ncol = 1,
+  heights = c(
+    0.55,
+    0.225,
+    0.5, 
+    0.45
+  )
+)%>% ggsave(
+  filename = 'figures/Gambia_change_direction_slices_2.png',
+  width = 12.1,
+  height = 10.1
+)
 }
 ```
 
-```{r fig4,echo=FALSE,out.width='100%',fig.cap="Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020."}
-knitr::include_graphics("figures/Gambia_change_direction.png")
+```{r fig5,echo=FALSE,out.width='100%',fig.cap="Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020."}
+knitr::include_graphics("figures/Gambia_change_direction_slices_1.png")
+```
+
+```{r fig6,echo=FALSE,out.width='100%',fig.cap="Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020."}
+knitr::include_graphics("figures/Gambia_change_direction_slices_2.png")
 ```
 
 It is important to note that net gains in mangrove does not necessarily mean there is no mangrove loss in the country. As presented earlier, the recorded loss is quite huge in relation to the investments needed to get such vegetations back to its full form through restoration. It is therefore necessary to emphasize the fact that the observed net gains should not mask the ongoing degradation of mangroves in different parts of the country. With the ongoing losses, the damage to livelihoods and biodiversity, such as fish and marine life, is significant. There still needs a strong push for minimizing the losses being recorded and invest in restoring those areas that are devoid of such vegetation already. As noted by Cormier-Salem & Panfili @Cormier-Salem-and-Panfili-2016, the investments in reforestation of mangrove areas have made significant progresses on restoring the mangrove structure but in effect were not able to achieve the delivery of services and functions as anticipated. As the authors noted in case of Senegal, the mangrove restoration was largely done in a campaign mode with emphasis on area rather than restoring the ecosystem goods and services from the mangroves. 
@@ -1923,9 +2703,233 @@ LD AND ILH contributed to conception and design of the study. JI and ILH organiz
 # Acknowledgments {-}
 
 This study was funded by the [World Agroforestry](http://www.worldagroforestry.org/) (International Centre for Research in Agroforestry; ICRAF) under funding xxxxx contract Number 13016114.
+# References
 
-# Supplemental Data 
+# Supplementary Material
+
+```{r r-compute-classification-maps,include=FALSE,echo=FALSE,cache=FALSE}
+if(!file.exists('figures/Gambia_classifications.png')) {
+  # # Define a palette for the 18 distinct land cover classes.
+myPalette = c(
+  '6495ed', #  1: water (assume standard wetlands colour) -> cornflowerblue
+  'aec3d4', #  2: sea water (assume standard water colour)
+  '152106', #  3: closed forest
+  '225129', #  4: opened forest
+  '369b47', #  5: woody sannava
+  '387242', #  6: savanna
+  '6a2325', #  7: closed shrubland
+  'b76031', #  8: opened shrubland
+  '91af40', #  9: grassland
+  '111149', # 10: wetlands
+  'cdb33b', # 11: croplands
+  'cc0013', # 12: urban
+  '33280d', # 13: crop mosaic
+  '808080', # 14: barren -> gray
+  'ffc0cb', # 15: mangroves -> pink
+  '14566f' # 16: riperian vegetation
+)
+
+myPalette <- paste0('#', myPalette)
+
+className <- c(
+  'Fresh waters',
+  'Salty waters',
+  'Closed forests',
+  'Open forests',
+  'Woody savannas',
+  'Savannas',
+  'Closed shrublands',
+  'Opened shrublands',
+  'Grasslands',
+  'Wetlands',
+  'Croplands',
+  'Built-up areas',
+  'Mosaics',
+  'Barren',
+  'Mangroves',
+  'Riperian vegetation'
+)
+
+  # source("source_files/r/Gambia_classification.R")
+  legend_table <- ggplot(data=data.frame(x = 1, 
+                                         myPalette = factor(1:16, labels = myPalette),
+                                         className = className))+
+    geom_bar(aes(x, fill = myPalette) 
+             # colour = 'white', size=2
+    )+
+    scale_fill_identity(labels = className, guide = 'legend', name = 'Land use and land cover')+
+    guides(fill=guide_legend(nrow=2))+
+    theme(
+      legend.background = element_rect(fill = 'gray'),
+      legend.title = element_text(size = 10, face = 'bold'),
+      # legend.text = element_text(size = 10),
+      legend.position = 'bottom'
+    )
+  
+  legend_table <- cowplot::get_legend(legend_table) 
+  
+  (raster::stack(
+    list(
+      'ee_output/Gambia_classified_2000_2002.tif',
+      'ee_output/Gambia_classified_2010_2012.tif',
+      'ee_output/Gambia_classified_2018_2020.tif'
+    )
+  ) %>%
+      rasterVis::gplot(maxpixels = maxpixels) + 
+      geom_tile(aes(fill = value)) +
+      facet_wrap(~ variable, ncol = 1, labeller = as_labeller(
+        c(
+          Gambia_classified_2000_2002 = '2000-classification',
+          Gambia_classified_2010_2012 = '2010-classification',
+          Gambia_classified_2018_2020 = '2020-classification'
+        )
+      )) +
+      scale_fill_gradientn(colours = myPalette, na.value="white") +
+      coord_sf(crs = 4326, expand = FALSE)+
+      # scale_x_continuous(expand = c(0,0))+
+      # scale_y_continuous(expand = c(0,0))+
+      # labs(x = 'Longitude', y = 'Latitude')+
+      theme_linedraw ()+
+      theme(
+        # axis.title = element_text(size = 10),
+        # axis.text = element_text(size = 10),
+        axis.title = element_blank(),
+        strip.text.x = element_text(colour = 'black', size = 12, face = 'bold', margin = margin(t = 0, b = 0)),
+        legend.position = 'none',
+        strip.background = element_blank(),
+        # plot.margin = margin(0.5,0.5,0.5,0.5),
+        plot.margin = margin(0,0,0,0)
+      )
+  ) %>%
+    grid.arrange(legend_table, ncol=1, heights=c(1, 0.06)) %>%
+    ggsave(
+      filename = 'figures/Gambia_classifications.png', device = 'png',
+      # width =  7.87, height = 7.81
+      width = 11.2, height = 9.81
+    )
+}
+```
+
+```{r fig7,echo=FALSE,out.width='100%',fig.cap="Land use and land cover classifications and changes based on continuous time series of monthly median composite of Landsat NDVI and NDWI acquired over the period 2000 – 2002 (2000-classification), 2010-classification and the period 2018 – 2020 (2020-classification) in The Gambia. These maps were derived by filling data gaps in the Landsat monthly composite using harmonic modelling after filling those gaps where MODIS NDVI and NDWI were available. Land use and land cover changes were estimated using image differencing."}
+knitr::include_graphics("figures/Gambia_classifications.png")
+```
+
+```{r r-compute-Gambia-mangroves-change-direction-maps,include=FALSE,echo=FALSE,cache=FALSE}
+if(!file.exists('figures/Gambia_change_direction.png')) {
+  # source("source_files/r/Gambia_mangroves_change_direction.R")
+  className = c(
+    'Increase',
+    'Decrease',
+    'Stable'
+  )
+  myPalette <- c(
+    'forestgreen',
+    'red',
+    'blue'
+  )
+  legend_table <- ggplot(data=data.frame(x = 1, 
+                                         myPalette = factor(1:length(className), labels = myPalette),
+                                         className = className))+
+    geom_bar(aes(x, fill = myPalette) 
+             # colour = 'white', size=2
+    )+
+    scale_fill_identity(labels = className, guide = 'legend', name = 'Change direction')+
+    guides(fill=guide_legend(nrow=1))+
+    theme(
+      legend.background = element_rect(fill = 'gray'),
+      legend.title = element_text(size = 10, face = 'bold'),
+      # legend.text = element_text(size = 10),
+      # legend.margin = margin(t = 1, b = 1, l = 256, r = 256),
+      # legend.margin = margin(t = 0.5, b = 0.5, l = 256, r = 256),
+      legend.margin = margin(t = 0.75, b = 0.75, l = 0.75, r = 0.75),
+      legend.position = 'bottom',
+    )
+  
+  legend_table <- cowplot::get_legend(legend_table) 
+  
+  p <- raster::stack(
+    list(
+      'ee_output/Gambia_mangrove_change_magnitude_2000_2010.tif',
+      'ee_output/Gambia_mangrove_change_magnitude_2010_2020.tif',
+      'ee_output/Gambia_mangrove_change_magnitude_2000_2020.tif'
+    )
+  ) %>%
+      crop(
+        extent(
+          matrix(
+            c(
+              -16.817361363458062, 13.826892060370968,
+              -16.817361363458062, 13.20,
+              -15.25, 13.20,
+              -15.25, 13.826892060370968
+            ),
+            ncol = 2,
+            byrow = TRUE
+          )
+        )
+      ) %>%
+      rasterVis::gplot(maxpixels = maxpixels) + 
+      geom_tile(aes(fill = value)) +
+      facet_wrap(~ variable, ncol = 1, labeller = as_labeller(
+        c(
+          Gambia_mangrove_change_magnitude_2000_2010 = '2000 - 2010 change direction',
+          Gambia_mangrove_change_magnitude_2010_2020 = '2010 - 2020 change direction',
+          Gambia_mangrove_change_magnitude_2000_2020 = '2000 - 2020 change direction'
+        )
+      )) +
+      scale_fill_gradientn(colours = myPalette, na.value="white") +
+      coord_sf(crs = 4326, expand = FALSE)+
+      # scale_x_continuous(expand = c(0,0))+
+      # scale_y_continuous(expand = c(0,0))+
+      # labs(x = 'Longitude', y = 'Latitude')+
+      theme_linedraw ()+
+      theme(
+        # axis.title = element_text(size = 10),
+        # axis.text = element_text(size = 10),
+        axis.title = element_blank(),
+        strip.text.x = element_text(colour = 'black', size = 12, face = 'bold', margin = margin(t = 0, b = 0)),
+        legend.position = 'none',
+        strip.background = element_blank(),
+        # plot.margin = margin(0.5,0.5,0.5,0.5),
+        plot.margin = margin(0,0,0,0)
+      )
+  
+  # %>%
+  #   # grid.arrange(legend_table, ncol=1, heights=c(1, 0.025)) %>%
+  #   grid.arrange(legend_table, ncol=1, heights=c(1, 0.02)) %>%
+  #   
+  #   ggsave(
+  #     filename = 'figures/Gambia_change_direction.png', device = 'png',
+  #     # width =  7.87, height = 7.81
+  #     # width = 11.2, height = 9.81
+  #     # width = 11.2, height = 9.46
+  #     width = 7.28, height =  9.48
+  #   )
+  (ggplot(data.frame(x = 0:1, y = 0:1))+
+    geom_blank()+
+    theme_void()+
+    annotation_custom(
+      grob = ggplotGrob(p), 
+      xmin = -Inf, xmax = Inf,
+      ymin = -Inf, ymax = Inf
+    )+
+  annotation_custom(
+    grob = legend_table, 
+    xmin = 0.671, xmax = 0.9,
+    ymin = -Inf, ymax = 0.023
+  )) %>%
+  ggsave(
+    filename = 'figures/Gambia_change_direction.png', device = 'png',
+    width = 7.66, height =  9.71
+  )
+}
+```
+
+```{r fig8,echo=FALSE,out.width='100%',fig.cap="Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020."}
+knitr::include_graphics("figures/Gambia_change_direction.png")
+```
+
+# Data Availability Statement
 
 We conducted the data analysis in Google Earth engine cloud computing platform [@Gorelick-et-al-2017] and the R programming language [@R-Core-Team-2020]. These were interfaced using rgee R package [@Aybar-et-al-2020] which we used as bridge for throughput between Google Earth engine and R . Both Google Earth engine and R are freely accessible (see <https://cran.r-project.org/index.html> for R and <https://code.earthengine.google.com/> for Google Earth Engine). We automated the entire process, including the installation of the required R packages; data processing; data streaming between Google Earth Engine and R; and results visualization, to provide a complete reproducible workflow that could be adapted to other contexts. The replication files along with further information for reproducing the work are available from <https://github.com/mangroveSpatial/mangroveGambiaReport>.
 
-# References

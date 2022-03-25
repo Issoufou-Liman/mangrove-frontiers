@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2022.3.16)  18 MAR 2022 09:21
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2022.3.16)  25 MAR 2022 06:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -990,94 +990,51 @@ Underfull \hbox (badness 10000) detected at line 170
 
 
 ]
-File: figures/Gambia_study_area_map.png Graphic file (type bmp)
-<figures/Gambia_study_area_map.png>
 LaTeX Font Info:    Font shape `T1/phv/b/it' in size <11> not available
-(Font)              Font shape `T1/phv/b/sl' tried instead on input line 310.
+(Font)              Font shape `T1/phv/b/sl' tried instead on input line 265.
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
 [2]
+File: figures/Gambia_study_area_map.png Graphic file (type bmp)
+<figures/Gambia_study_area_map.png>
+
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
 [3]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[4]
 File: figures/Gambia_ndsi_ts.png Graphic file (type bmp)
 <figures/Gambia_ndsi_ts.png>
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
-[4]
+[5]
 
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 509.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 519.
 
 
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 510.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 520.
 
 Missing character: There is no … ("2026) in font cmr8!
 Missing character: There is no … ("2026) in font cmr8!
 Missing character: There is no … ("2026) in font cmr9!
 Missing character: There is no … ("2026) in font cmr7!
 
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 514.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 524.
 
 
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 515.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 525.
 
 
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 516.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 526.
 
 
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 517.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \vbox (3.49998pt too high) has occurred while \output is active []
-
-[5]
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 541.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 542.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 544.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 545.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 546.
-
-Missing character: There is no … ("2026) in font ptmri8t!
-Missing character: There is no … ("2026) in font ptmri8t!
-Missing character: There is no … ("2026) in font ptmri8t!
-Missing character: There is no … ("2026) in font ptmri8t!
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 547.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 548.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 549.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 550.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 551.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 552.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 553.
-
-
-LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 554.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 527.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1086,75 +1043,110 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
 [6]
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 551.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 552.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 554.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 555.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 556.
+
+Missing character: There is no … ("2026) in font ptmri8t!
+Missing character: There is no … ("2026) in font ptmri8t!
+Missing character: There is no … ("2026) in font ptmri8t!
+Missing character: There is no … ("2026) in font ptmri8t!
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 557.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 558.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 559.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 560.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 561.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 562.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 563.
+
+
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 564.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
 [7]
-File: figures/Gambia_classifications.png Graphic file (type bmp)
-<figures/Gambia_classifications.png>
-Missing character: There is no – ("2013) in font ptmr8t!
-Missing character: There is no – ("2013) in font ptmr8t!
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
 [8]
+File: figures/Gambia_classifications_slices_1.png Graphic file (type bmp)
+<figures/Gambia_classifications_slices_1.png>
+File: figures/Gambia_classifications_slices_2.png Graphic file (type bmp)
+<figures/Gambia_classifications_slices_2.png>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
 [9]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[10]
+File: figures/Gambia_change_direction_slices_1.png Graphic file (type bmp)
+<figures/Gambia_change_direction_slices_1.png>
+File: figures/Gambia_change_direction_slices_2.png Graphic file (type bmp)
+<figures/Gambia_change_direction_slices_2.png>
+
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[11]
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[12]
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[13]
+File: figures/Gambia_classifications.png Graphic file (type bmp)
+<figures/Gambia_classifications.png>
+Missing character: There is no – ("2013) in font ptmr8t!
+Missing character: There is no – ("2013) in font ptmr8t!
 File: figures/Gambia_change_direction.png Graphic file (type bmp)
 <figures/Gambia_change_direction.png>
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
-[10]
-Overfull \vbox (3.49998pt too high) has occurred while \output is active []
-
-[11]
-Underfull \hbox (badness 2285) in paragraph at lines 919--924
+[14]
+Underfull \hbox (badness 2285) in paragraph at lines 945--950
 [][]\T1/ptm/m/n/12 Ali Bah, O. (2019). Land Use and Land Cover Dynamics in Central River Region of the
  []
 
 
-Underfull \hbox (badness 3679) in paragraph at lines 919--924
+Underfull \hbox (badness 3679) in paragraph at lines 945--950
 \T1/ptm/m/n/12 Gambia, West Africa from 1984 to 2017. \T1/ptm/m/it/12 American Journal of Modern Energy \T1/ptm/m/n/12 5, 5.
- []
-
-
-Underfull \hbox (badness 1215) in paragraph at lines 943--948
-\T1/ptm/m/n/12 zones and deltas? Case studies in Senegal. \T1/ptm/m/it/12 African Journal of Aquatic Science \T1/ptm/m/n/12 41, 89--98.
- []
-
-
-Overfull \vbox (3.49998pt too high) has occurred while \output is active []
-
-[12]
-Underfull \hbox (badness 1675) in paragraph at lines 966--971
-[][]\T1/ptm/m/n/12 Fent, A., Bardou, R., Carney, J., and Cavanaugh, K. (2019). Transborder political ecology
- []
-
-
-Underfull \hbox (badness 3098) in paragraph at lines 966--971
-\T1/ptm/m/n/12 of mangroves in Senegal and The Gambia. \T1/ptm/m/it/12 Global Environmental Change \T1/ptm/m/n/12 54, 214--226.
- []
-
-
-Underfull \hbox (badness 2197) in paragraph at lines 1025--1030
-[][]\T1/ptm/m/n/12 The Gambia Bureau of Statistics (2012). The Gambia 2013 Population and Housing Census
- []
-
-
-Underfull \hbox (badness 2762) in paragraph at lines 1025--1030
-\T1/ptm/m/n/12 Preliminary Results. The Gambia Bureau of Statistics; The Gambia Bureau of Statistics
- []
-
-
-Underfull \hbox (badness 1412) in paragraph at lines 1031--1035
-\T1/ptm/m/n/12 UNEP Available at: []$\T1/pcr/m/n/12 https : / / archive . org / download / mangrovesofweste07corc /
  []
 
 
@@ -1163,13 +1155,55 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
-[13]
-Underfull \hbox (badness 3354) in paragraph at lines 1050--1055
+[15]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[16]
+Underfull \hbox (badness 1215) in paragraph at lines 969--974
+\T1/ptm/m/n/12 zones and deltas? Case studies in Senegal. \T1/ptm/m/it/12 African Journal of Aquatic Science \T1/ptm/m/n/12 41, 89--98.
+ []
+
+
+Underfull \hbox (badness 1675) in paragraph at lines 992--997
+[][]\T1/ptm/m/n/12 Fent, A., Bardou, R., Carney, J., and Cavanaugh, K. (2019). Transborder political ecology
+ []
+
+
+Underfull \hbox (badness 3098) in paragraph at lines 992--997
+\T1/ptm/m/n/12 of mangroves in Senegal and The Gambia. \T1/ptm/m/it/12 Global Environmental Change \T1/ptm/m/n/12 54, 214--226.
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (3.49998pt too high) has occurred while \output is active []
+
+[17]
+Underfull \hbox (badness 2197) in paragraph at lines 1051--1056
+[][]\T1/ptm/m/n/12 The Gambia Bureau of Statistics (2012). The Gambia 2013 Population and Housing Census
+ []
+
+
+Underfull \hbox (badness 2762) in paragraph at lines 1051--1056
+\T1/ptm/m/n/12 Preliminary Results. The Gambia Bureau of Statistics; The Gambia Bureau of Statistics
+ []
+
+
+Underfull \hbox (badness 1412) in paragraph at lines 1057--1061
+\T1/ptm/m/n/12 UNEP Available at: []$\T1/pcr/m/n/12 https : / / archive . org / download / mangrovesofweste07corc /
+ []
+
+
+Underfull \hbox (badness 3354) in paragraph at lines 1076--1081
 [][]\T1/ptm/m/n/12 Zhu, Z., and Woodcock, C. E. (2014). Continuous change detection and classification of
  []
 
 
-Underfull \hbox (badness 1194) in paragraph at lines 1050--1055
+Underfull \hbox (badness 1194) in paragraph at lines 1076--1081
 \T1/ptm/m/n/12 land cover using all available Landsat data. \T1/ptm/m/it/12 Remote Sensing of Environment \T1/ptm/m/n/12 144, 152--171.
  []
 
@@ -1180,21 +1214,21 @@ See the caption package documentation for explanation.
 
 Overfull \vbox (3.49998pt too high) has occurred while \output is active []
 
-[14] (./manuscript.aux)
+[18] (./manuscript.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
 
 Package rerunfilecheck Info: File `manuscript.out' has not changed.
-(rerunfilecheck)             Checksum: 4C405A42BFD32ECA401254544B655F22;4080.
+(rerunfilecheck)             Checksum: 6A26FCDBD2EC475ACA59AB516A9148F5;4194.
  ) 
 Here is how much of TeX's memory you used:
- 31393 strings out of 478179
- 609951 string characters out of 5854109
- 929440 words of memory out of 5000000
- 51407 multiletter control sequences out of 15000+600000
- 520281 words of font info for 90 fonts, out of 8000000 for 9000
+ 31474 strings out of 478179
+ 613510 string characters out of 5854109
+ 930023 words of memory out of 5000000
+ 51484 multiletter control sequences out of 15000+600000
+ 521914 words of font info for 91 fonts, out of 8000000 for 9000
  18 hyphenation exceptions out of 8191
- 104i,12n,131p,1036b,892s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 104i,12n,131p,2506b,894s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on manuscript.pdf (14 pages).
+Output written on manuscript.pdf (18 pages).

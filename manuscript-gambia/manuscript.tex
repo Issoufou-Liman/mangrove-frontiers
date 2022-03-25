@@ -168,6 +168,16 @@ sensed data in Earth Engine}
 
 \maketitle
 
+\begin{abstract}
+
+Gambia, relative to its size, has an extensive mangrove cover along its cost. This unique vegetation serves numerous roles. It is the source of edible products sourcing (e.g., shellfishing) for thousands of households living close to the water systems. The vegetation is also the source of wood for energy, construction and other household utensils and farm materials. Of late, there is a lot ongoing in the mangrove ecosystems and the spatial coverage of this vegetation type has been oscillating between gains and losses. A proper account of change magnitude and where the changes have been happening is not widely studied. In some case, the methods deployed even may have uncertainties that made the estimates to vary between studies. We estimated the spatial-temporal dynamics of mangrove between 2000 and 2020. We used 2,916 Landsat and 959 MODIS tiles (used for filling gaps in Landsat data) of land surface reflectance data spread across 3 bands (i.e., visible red, near infrared and shortest wave infrared) acquired between the years 2000 and 2020. The atmospherically corrected Landsat and MODIS surface reflectance provide reasonable estimates of target reflectance as it would be measured on the ground, making them good candidates for land use and land cover analysis. A classification accuracy of 0.97 and above was achieved both for the overall accuracy and Kappa coefficient. The results revealed that mangroves in The Gambia made net gains over the time period considered. Mangroves, in general, made a significant gain with a net area gain of about 7,784 ha over the 20 years period. The total area gain of mangroves in the period was about 11,951 ha (with almost 598 ha per year). During the same period, the loss in the existing mangrove vegetation area was estimated to be 4,167 ha with an estimated annual loss of about 208 ha. This observed recovery of the mangrove extent could largely be attributed to growing awareness about the importance of this vegetation type for coastal area resilience and the livelihoods of thousands who depend on it. We, however, want to note that the observed net gains should not mask the ongoing degradation of mangroves in other parts of the country. With the losses of such, the damage to livelihoods and biodiversity such as fish and marine life is significant. There still needs a strong push for minimizing the losses being recorded and invest in restoring those areas that are devoid of the vegetation already. 
+
+%All article types: you may provide up to 8 keywords; at least 5 are mandatory.
+\tiny
+ \keyFont{ \section{Keywords:} Satellite image time series; Landsat data; Land cover classification; Change detection; Mangrove; Google Earth Engine } 
+
+\end{abstract}
+
 \hypertarget{introduction}{%
 \section*{Introduction}\label{introduction}}
 \addcontentsline{toc}{section}{Introduction}
@@ -666,7 +676,11 @@ Kappa &  & 0.98 &  &  & 0.96 &  &  & 0.96 & \\
 \end{table}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/Gambia_classifications} \caption{Land use and land cover classifications and changes based on continuous time series of monthly median composite of Landsat NDVI and NDWI acquired over the period 2000 – 2002 (2000-classification), 2010-classification and the period 2018 – 2020 (2020-classification) in The Gambia. These maps were derived by filling data gaps in the Landsat monthly composite using harmonic modelling after filling those gaps where MODIS NDVI and NDWI were available. Land use and land cover changes were estimated using image differencing.}\label{fig:fig3}
+\includegraphics[width=1\linewidth]{figures/Gambia_classifications_slices_1} \caption{Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020.}\label{fig:fig3}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/Gambia_classifications_slices_2} \caption{Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020.}\label{fig:fig4}
 \end{figure}
 
 \hypertarget{ref42}{%
@@ -815,7 +829,11 @@ change (e.g., sea level rise) on livelihoods and infrastructures which
 mangroves and other coastal vegetation could protect strongly.
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{figures/Gambia_change_direction} \caption{Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020.}\label{fig:fig4}
+\includegraphics[width=1\linewidth]{figures/Gambia_change_direction_slices_1} \caption{Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020.}\label{fig:fig5}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/Gambia_change_direction_slices_2} \caption{Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020.}\label{fig:fig6}
 \end{figure}
 
 It is important to note that net gains in mangrove does not necessarily
@@ -883,10 +901,22 @@ revision, read, and approved the submitted version.
 This study was funded by the
 \href{http://www.worldagroforestry.org/}{World Agroforestry}
 (International Centre for Research in Agroforestry; ICRAF) under funding
-xxxxx contract Number 13016114.
+xxxxx contract Number 13016114. \# References
 
-\hypertarget{supplemental-data}{%
-\section{Supplemental Data}\label{supplemental-data}}
+\hypertarget{supplementary-material}{%
+\section{Supplementary Material}\label{supplementary-material}}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/Gambia_classifications} \caption{Land use and land cover classifications and changes based on continuous time series of monthly median composite of Landsat NDVI and NDWI acquired over the period 2000 – 2002 (2000-classification), 2010-classification and the period 2018 – 2020 (2020-classification) in The Gambia. These maps were derived by filling data gaps in the Landsat monthly composite using harmonic modelling after filling those gaps where MODIS NDVI and NDWI were available. Land use and land cover changes were estimated using image differencing.}\label{fig:fig7}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{figures/Gambia_change_direction} \caption{Dynamics of mangrove vegetation in The Gambia between the period 2000 and 2020.}\label{fig:fig8}
+\end{figure}
+
+\hypertarget{data-availability-statement}{%
+\section{Data Availability
+Statement}\label{data-availability-statement}}
 
 We conducted the data analysis in Google Earth engine cloud computing
 platform (\protect\hyperlink{ref-Gorelick-et-al-2017}{Gorelick et al.,
@@ -904,10 +934,6 @@ and R; and results visualization, to provide a complete reproducible
 workflow that could be adapted to other contexts. The replication files
 along with further information for reproducing the work are available
 from \url{https://github.com/mangroveSpatial/mangroveGambiaReport}.
-
-\hypertarget{references}{%
-\section*{References}\label{references}}
-\addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}

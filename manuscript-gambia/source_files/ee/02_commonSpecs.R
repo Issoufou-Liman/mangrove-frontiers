@@ -34,7 +34,7 @@ myPalette = c(
   '33280d', # 13: crop mosaic
   '808080', # 14: barren -> gray
   'ffc0cb', # 15: mangroves -> pink
-  '6f6f6f' # 16: riperian vegetation
+  '14566f' # 16: riperian vegetation
 )
 
 myPalette <- paste0('#', myPalette)
